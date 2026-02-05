@@ -101,18 +101,8 @@
         .download-title {
             font-size: 1.4rem;
             font-weight: 600;
-            margin-bottom: 15px;
-            color: #fff;
-        }
-
-        .file-size {
-            color: #aaa;
             margin-bottom: 25px;
-            font-size: 0.9rem;
-            padding: 8px 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            display: inline-block;
+            color: #fff;
         }
 
         .download-btn {
@@ -284,7 +274,7 @@
             transform-origin: 50% 50%;
             stroke-dasharray: 565;
             stroke-dashoffset: 565;
-            animation: countdown 5s linear forwards;
+            animation: countdown 10s linear forwards;
         }
 
         @keyframes countdown {
@@ -368,11 +358,6 @@
         </div>
         
         <div class="download-title">Ready to Download</div>
-        
-        <div class="file-size">
-            <i class="fas fa-hdd" style="margin-right: 8px;"></i>
-            File Size: 1.1 GB • HD Quality
-        </div>
 
         <button class="download-btn" onclick="startDownload()">
             <i class="fas fa-download"></i>
@@ -397,7 +382,7 @@
         <div class="countdown-title">Preparing Your Download</div>
         
         <div class="timer-container">
-            <div class="timer" id="timer">5</div>
+            <div class="timer" id="timer">10</div>
         </div>
         
         <div class="countdown-message">
@@ -421,7 +406,7 @@
 // AD LINKS
 const PRIMARY_AD_LINK = "https://otieu.com/4/8251888";
 const SECONDARY_AD_LINK = "https://otieu.com/4/8195375";
-const DOWNLOAD_LINK = "https://javlion.xyz/download/4600p8m8v276_n";
+const DOWNLOAD_LINK = "https://viralph.player4me.online/#jmmln&dl=1";
 
 /* ================= FLOW ================= */
 function startDownload() {
@@ -451,7 +436,7 @@ function startDownload() {
 }
 
 function startTimer() {
-    let time = 5;
+    let time = 10;
     const timerEl = document.getElementById("timer");
     const btn = document.getElementById("finalDownload");
     const progressCircle = document.getElementById("progress-circle");
@@ -459,7 +444,7 @@ function startTimer() {
     // Reset animation
     progressCircle.style.animation = 'none';
     progressCircle.offsetHeight;
-    progressCircle.style.animation = 'countdown 5s linear forwards';
+    progressCircle.style.animation = 'countdown 10s linear forwards';
 
     const interval = setInterval(() => {
         time--;
@@ -508,15 +493,6 @@ function handleFinalDownload() {
             setTimeout(() => {
                 btn.innerHTML = '<i class="fas fa-check"></i> Download Started!';
                 btn.style.background = 'linear-gradient(to right, #4CAF50, #45a049)';
-                
-                // Show download info
-                const downloadInfo = document.createElement('div');
-                downloadInfo.className = 'info-text';
-                downloadInfo.style.color = '#ff6b00';
-                downloadInfo.style.marginTop = '10px';
-                downloadInfo.innerHTML = `<i class="fas fa-file-download" style="margin-right: 5px;"></i>
-                    Downloading HD Quality (1.1 GB)`;
-                btn.parentNode.insertBefore(downloadInfo, btn.nextSibling);
                 
                 // Enable download again after delay
                 setTimeout(() => {
