@@ -1,0 +1,515 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Download File</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2a2a2a 100%);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding: 15px;
+            width: 100%;
+        }
+
+        /* ================= LANDING ================= */
+        .page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            background: rgba(20, 20, 20, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 107, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #ff6b00, #ff8c42, #ff6b00);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite linear;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .file-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #ff6b00, #ff8c42);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            color: white;
+            box-shadow: 0 8px 20px rgba(255, 107, 0, 0.3);
+        }
+
+        .download-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: #fff;
+        }
+
+        .download-btn {
+            width: 100%;
+            background: linear-gradient(to right, #ff6b00, #ff8c42);
+            border: none;
+            border-radius: 12px;
+            padding: 18px 20px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 6px 15px rgba(255, 107, 0, 0.3);
+            touch-action: manipulation;
+        }
+
+        .download-btn:active {
+            transform: translateY(2px) scale(0.98);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 107, 0, 0.4);
+            background: linear-gradient(to right, #ff8c42, #ff6b00);
+        }
+
+        .download-btn:disabled {
+            background: linear-gradient(to right, #666, #555);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .info-text {
+            margin-top: 20px;
+            color: #888;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        /* ================= COUNTDOWN ================= */
+        .countdown-box {
+            background: rgba(20, 20, 20, 0.95);
+            padding: 30px 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 107, 0, 0.2);
+            max-width: 450px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        .countdown-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 107, 0, 0.1) 0%, transparent 70%);
+            z-index: -1;
+        }
+
+        .countdown-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .timer-container {
+            position: relative;
+            display: inline-block;
+            margin: 25px 0;
+        }
+
+        .timer {
+            font-size: 4rem;
+            font-weight: 700;
+            color: #ff6b00;
+            text-shadow: 0 0 15px rgba(255, 107, 0, 0.4);
+            letter-spacing: 1px;
+            position: relative;
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+
+        .timer::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 10%;
+            width: 80%;
+            height: 4px;
+            background: linear-gradient(to right, transparent, #ff6b00, transparent);
+            border-radius: 4px;
+        }
+
+        .countdown-message {
+            font-size: 0.95rem;
+            margin: 15px 0 25px;
+            color: #ccc;
+            line-height: 1.5;
+            padding: 0 10px;
+        }
+
+        .final-download-btn {
+            margin-top: 15px;
+            padding: 18px 20px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(to right, #555, #444);
+            color: #aaa;
+            cursor: not-allowed;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .final-download-btn.active {
+            background: linear-gradient(to right, #ff6b00, #ff8c42);
+            color: #fff;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(255, 107, 0, 0.4);
+        }
+
+        .final-download-btn.active:active {
+            transform: translateY(2px);
+            box-shadow: 0 4px 15px rgba(255, 107, 0, 0.4);
+        }
+
+        .final-download-btn.active:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(255, 107, 0, 0.6);
+        }
+
+        .progress-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 180px;
+            height: 180px;
+            z-index: -1;
+        }
+
+        .progress-ring circle {
+            fill: none;
+            stroke-width: 3;
+            stroke-linecap: round;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+            stroke-dasharray: 565;
+            stroke-dashoffset: 565;
+            animation: countdown 10s linear forwards;
+        }
+
+        @keyframes countdown {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        /* ================= RESPONSIVE ================= */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container, .countdown-box {
+                padding: 25px 20px;
+                max-width: 95%;
+            }
+            
+            .file-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+                margin-bottom: 15px;
+            }
+            
+            .download-title {
+                font-size: 1.2rem;
+            }
+            
+            .download-btn, .final-download-btn {
+                padding: 16px 20px;
+                font-size: 1rem;
+            }
+            
+            .timer {
+                font-size: 3.2rem;
+            }
+            
+            .progress-ring {
+                width: 150px;
+                height: 150px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .container, .countdown-box {
+                padding: 20px 15px;
+            }
+            
+            .timer {
+                font-size: 2.8rem;
+            }
+            
+            .download-title {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-height: 600px) and (orientation: landscape) {
+            .page {
+                padding: 10px 0;
+                align-items: flex-start;
+                min-height: auto;
+            }
+            
+            .container, .countdown-box {
+                margin: 10px auto;
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ================= LANDING PAGE ================= -->
+<div class="page" id="landing">
+    <div class="container">
+        <div class="file-icon">
+            <i class="fas fa-download"></i>
+        </div>
+        
+        <div class="download-title">Ready to Download</div>
+
+        <button class="download-btn" onclick="startDownload()">
+            <i class="fas fa-download"></i>
+            DOWNLOAD NOW
+        </button>
+        
+        <div class="info-text">
+            <i class="fas fa-info-circle" style="margin-right: 6px;"></i>
+            Clicking download will open verification ads before starting your download
+        </div>
+    </div>
+</div>
+
+<!-- ================= COUNTDOWN PAGE ================= -->
+<div class="page" id="countdownPage" style="display:none">
+    <div class="countdown-box">
+        <svg class="progress-ring" viewBox="0 0 220 220">
+            <circle cx="110" cy="110" r="100" stroke="rgba(255, 107, 0, 0.2)" stroke-width="4"></circle>
+            <circle id="progress-circle" cx="110" cy="110" r="100" stroke="#ff6b00" stroke-width="4"></circle>
+        </svg>
+        
+        <div class="countdown-title">Preparing Your Download</div>
+        
+        <div class="timer-container">
+            <div class="timer" id="timer">10</div>
+        </div>
+        
+        <div class="countdown-message">
+            Please wait while we verify your request...
+        </div>
+
+        <button class="final-download-btn" id="finalDownload">
+            <i class="fas fa-download"></i>
+            Start Download
+        </button>
+        
+        <div class="info-text" style="margin-top: 20px;">
+            <i class="fas fa-ad" style="margin-right: 6px;"></i>
+            Clicking will open ads and start your download
+        </div>
+    </div>
+</div>
+
+<script>
+/* ================= CONFIG ================= */
+// AD LINKS
+const PRIMARY_AD_LINK = "https://otieu.com/4/7512585";
+const SECONDARY_AD_LINK = "https://otieu.com/4/8195375";
+const DOWNLOAD_LINK = "https://viralph.player4me.online/#p3fb9&dl=1";
+
+/* ================= FLOW ================= */
+function startDownload() {
+    // Visual feedback for button click
+    const btn = document.querySelector('.download-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Opening...';
+    
+    // 1. OPEN AD WHEN DOWNLOAD IS CLICKED
+    setTimeout(() => {
+        window.open(PRIMARY_AD_LINK, "_blank", "noopener,noreferrer");
+        
+        // 2. SHOW COUNTDOWN PAGE
+        setTimeout(() => {
+            document.getElementById("landing").style.display = "none";
+            const countdownPage = document.getElementById("countdownPage");
+            countdownPage.style.display = "flex";
+            countdownPage.style.opacity = "0";
+            
+            // Trigger reflow for animation
+            countdownPage.offsetHeight;
+            countdownPage.style.opacity = "1";
+            
+            startTimer();
+        }, 300);
+    }, 100);
+}
+
+function startTimer() {
+    let time = 10;
+    const timerEl = document.getElementById("timer");
+    const btn = document.getElementById("finalDownload");
+    const progressCircle = document.getElementById("progress-circle");
+    
+    // Reset animation
+    progressCircle.style.animation = 'none';
+    progressCircle.offsetHeight;
+    progressCircle.style.animation = 'countdown 10s linear forwards';
+
+    const interval = setInterval(() => {
+        time--;
+        timerEl.textContent = time;
+        
+        // Pulse effect
+        timerEl.style.transform = "scale(1.08)";
+        setTimeout(() => {
+            timerEl.style.transform = "scale(1)";
+        }, 150);
+
+        if (time <= 0) {
+            clearInterval(interval);
+            btn.classList.add("active");
+            btn.innerHTML = '<i class="fas fa-download"></i> Start Download';
+            
+            // Add click handler
+            btn.onclick = handleFinalDownload;
+        }
+    }, 1000);
+}
+
+function handleFinalDownload() {
+    const btn = document.getElementById("finalDownload");
+    
+    if (!btn.classList.contains('active')) return;
+    
+    // Disable button
+    btn.disabled = true;
+    btn.style.cursor = 'not-allowed';
+    btn.style.transform = 'translateY(2px)';
+    
+    // Visual feedback
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Opening Ads...';
+    
+    // 1. OPEN SECONDARY AD
+    setTimeout(() => {
+        window.open(SECONDARY_AD_LINK, "_blank", "noopener,noreferrer");
+        
+        // 2. START FILE DOWNLOAD
+        setTimeout(() => {
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Starting Download...';
+            startFileDownload();
+            
+            // 3. Update UI
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fas fa-check"></i> Download Started!';
+                btn.style.background = 'linear-gradient(to right, #4CAF50, #45a049)';
+                
+                // Enable download again after delay
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fas fa-redo"></i> Download Again';
+                    btn.style.background = 'linear-gradient(to right, #ff6b00, #ff8c42)';
+                    btn.disabled = false;
+                    btn.style.cursor = 'pointer';
+                    btn.style.transform = 'translateY(0)';
+                    btn.classList.add('active');
+                }, 2000);
+            }, 500);
+        }, 500);
+    }, 300);
+}
+
+function startFileDownload() {
+    const downloadLink = document.createElement('a');
+    downloadLink.href = DOWNLOAD_LINK;
+    downloadLink.download = 'SAME-220-HD.mp4';
+    downloadLink.style.display = 'none';
+    document.body.appendChild(downloadLink);
+    
+    downloadLink.click();
+    
+    setTimeout(() => {
+        document.body.removeChild(downloadLink);
+    }, 100);
+}
+</script>
+</body>
+</html>
