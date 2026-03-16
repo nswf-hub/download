@@ -2,805 +2,821 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>Watch Video</title>
+    <title>Download File</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
-        
+
         body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding: 15px;
+            width: 100%;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ================= LANDING ================= */
+        .page {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            width: 100%;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out forwards;
             padding: 10px;
-            background: radial-gradient(circle at 20% 30%, #1a0033, #000 90%);
-            position: relative;
-            overflow-x: hidden;
         }
-        
-        body::before {
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px 25px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        .container::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
-            background: url('data:image/svg+xml;utf8,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="8" cy="8" r="1" fill="rgba(255,200,200,0.1)"/><circle cx="32" cy="15" r="2" fill="rgba(200,100,255,0.1)"/></svg>');
-            opacity: 0.4;
-            animation: float 30s linear infinite;
-            pointer-events: none;
-            z-index: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6, #6366f1);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite linear;
         }
-        
-        @keyframes float {
-            from { transform: translateY(0) translateX(0); }
-            to { transform: translateY(-20px) translateX(5px); }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
         }
-        
-        .bg-orb {
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            border-radius: 50%;
-            background: radial-gradient(circle at center, rgba(255, 51, 153, 0.15), transparent 70%);
-            filter: blur(60px);
-            z-index: 0;
-            animation: orbMove 15s ease-in-out infinite alternate;
-        }
-        
-        .orb1 {
-            top: 5%;
-            left: 0%;
-            background: radial-gradient(circle at center, rgba(255, 100, 150, 0.2), transparent);
-        }
-        
-        .orb2 {
-            bottom: 5%;
-            right: 0%;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle at center, rgba(170, 68, 255, 0.15), transparent);
-            animation-duration: 25s;
-        }
-        
-        @media (max-width: 600px) {
-            .bg-orb {
-                width: 200px;
-                height: 200px;
-                filter: blur(40px);
-                opacity: 0.6;
-            }
-            .orb2 {
-                width: 250px;
-                height: 250px;
-            }
-        }
-        
-        @keyframes orbMove {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(20px, -15px) scale(1.05); }
-        }
-        
-        .container {
-            width: 100%;
-            max-width: 600px;
-            position: relative;
-            z-index: 10;
-        }
-        
-        .video-wrapper {
-            width: 100%;
-            background: rgba(17, 17, 17, 0.8);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-radius: 16px 16px 0 0;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-bottom: none;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-        }
-        
-        .player {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            background: #000;
-            display: flex;
+
+        .file-icon {
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            position: relative;
-        }
-        
-        .play-button {
-            width: min(60px, 15vw);
-            height: min(60px, 15vw);
-            min-width: 44px;
-            min-height: 44px;
-            background: #ff0066;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: min(24px, 7vw);
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border-radius: 18px;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
             color: white;
-            border: 2px solid white;
-            transition: transform 0.2s, background 0.2s;
-            box-shadow: 0 0 30px #ff0066;
-            -webkit-tap-highlight-color: transparent;
-            z-index: 20;
-            touch-action: manipulation;
+            box-shadow: 
+                0 10px 25px rgba(99, 102, 241, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
         }
-        
-        .play-button:hover {
-            transform: scale(1.1);
-            background: #ff3388;
-            box-shadow: 0 0 40px #ff3388;
+
+        .file-icon::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
         }
-        
-        .play-button:active {
-            transform: scale(0.95);
+
+        .download-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: #ffffff;
+            background: linear-gradient(90deg, #ffffff, #e2e8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
         }
-        
-        #myVideo {
+
+        .download-btn {
             width: 100%;
-            height: 100%;
-            display: none;
-            object-fit: contain;
-            background-color: #000;
-            z-index: 5;
-        }
-        
-        #fallbackIframe {
-            width: 100%;
-            height: 100%;
-            display: none;
+            background: linear-gradient(to right, #6366f1, #8b5cf6);
             border: none;
-            background: #000;
-            z-index: 5;
+            border-radius: 14px;
+            padding: 18px 20px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            box-shadow: 
+                0 8px 25px rgba(99, 102, 241, 0.3),
+                0 4px 6px rgba(0, 0, 0, 0.1);
+            touch-action: manipulation;
+            position: relative;
+            overflow: hidden;
         }
-        
-        .thumbnail {
+
+        .download-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
             width: 100%;
             height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s;
+        }
+
+        .download-btn:hover::before {
+            left: 100%;
+        }
+
+        .download-btn:active {
+            transform: translateY(2px) scale(0.98);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 12px 30px rgba(99, 102, 241, 0.4),
+                0 6px 10px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(to right, #8b5cf6, #6366f1);
+        }
+
+        .download-btn:disabled {
+            background: linear-gradient(to right, #475569, #64748b);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .download-btn:disabled::before {
+            display: none;
+        }
+
+        .info-text {
+            margin-top: 20px;
+            color: #94a3b8;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            padding: 0 5px;
+        }
+
+        .info-text i {
+            color: #8b5cf6;
+            margin-right: 6px;
+        }
+
+        /* ================= COUNTDOWN ================= */
+        .countdown-box {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            padding: 30px 25px;
+            border-radius: 20px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 420px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        .countdown-box::before {
+            content: '';
             position: absolute;
             top: 0;
             left: 0;
-            z-index: 10;
-            display: flex;
-            background: linear-gradient(145deg, #1a0033, #33001a, #4d0026);
-        }
-        
-        .preview-half {
-            flex: 1;
-            overflow: hidden;
-            position: relative;
-            border-right: 2px solid rgba(255,255,255,0.2);
-            background: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .preview-video {
             width: 100%;
-            height: 100%;
-            object-fit: contain;
-            background: #000;
-            pointer-events: none;
+            height: 3px;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6, #6366f1);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite linear;
         }
-        
-        .text-half {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 8px;
-            position: relative;
-            z-index: 2;
-            background: rgba(0,0,0,0.3);
-            backdrop-filter: blur(2px);
-            -webkit-backdrop-filter: blur(2px);
-        }
-        
-        .glow-ball {
-            position: absolute;
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background: radial-gradient(circle at center, #ff3399, transparent);
-            filter: blur(40px);
-            opacity: 0.4;
-            z-index: 0;
-            pointer-events: none;
-        }
-        
-        .ball1 {
-            top: -30px;
-            right: -30px;
-            animation: move 8s ease-in-out infinite;
-        }
-        
-        .ball2 {
-            bottom: -30px;
-            left: -30px;
-            background: radial-gradient(circle at center, #aa44ff, transparent);
-            animation: move 10s ease-in-out infinite reverse;
-        }
-        
-        @media (max-width: 500px) {
-            .glow-ball {
-                width: 100px;
-                height: 100px;
-                filter: blur(30px);
-            }
-        }
-        
-        @keyframes move {
-            0% { transform: translate(0, 0); }
-            50% { transform: translate(15px, 15px); }
-            100% { transform: translate(0, 0); }
-        }
-        
-        .hot-text {
-            font-size: clamp(32px, 12vw, 70px);
-            font-weight: 900;
-            text-shadow: 0 0 30px #ff3399, 0 0 60px #ff0066;
-            letter-spacing: 4px;
-            animation: flicker 2s linear infinite;
-            line-height: 1.2;
-            z-index: 2;
-        }
-        
-        @keyframes flicker {
-            0% { opacity: 1; text-shadow: 0 0 30px #ff3399; }
-            25% { opacity: 0.9; text-shadow: 0 0 40px #ff66aa; }
-            50% { opacity: 1; text-shadow: 0 0 30px #ff0066; }
-            75% { opacity: 0.9; text-shadow: 0 0 50px #ff3388; }
-            100% { opacity: 1; text-shadow: 0 0 30px #ff3399; }
-        }
-        
-        .premium-text {
-            font-size: clamp(18px, 6vw, 36px);
+
+        .countdown-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #ffffff;
             font-weight: 700;
-            letter-spacing: clamp(4px, 2vw, 12px);
-            margin-top: 5px;
-            color: #ffaa00;
-            text-shadow: 0 0 20px #ffaa00;
-            z-index: 2;
+            background: linear-gradient(90deg, #ffffff, #e2e8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
         }
-        
-        .click-text {
-            font-size: clamp(12px, 4.5vw, 22px);
-            margin-top: clamp(12px, 4vw, 30px);
-            color: #ff66aa;
-            text-transform: uppercase;
-            letter-spacing: clamp(2px, 1.5vw, 4px);
-            border: 1px solid #ff66aa;
-            padding: clamp(5px, 2vw, 8px) clamp(12px, 4vw, 24px);
-            border-radius: 50px;
-            background: rgba(255, 102, 170, 0.2);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            animation: glow 2s ease-in-out infinite;
-            white-space: nowrap;
-            z-index: 2;
+
+        .countdown-wrapper {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 25px auto;
         }
-        
-        @keyframes glow {
-            0% { box-shadow: 0 0 10px #ff66aa; }
-            50% { box-shadow: 0 0 20px #ff66aa; }
-            100% { box-shadow: 0 0 10px #ff66aa; }
-        }
-        
-        @media (max-width: 375px) {
-            .hot-text {
-                font-size: 28px;
-            }
-            .premium-text {
-                font-size: 16px;
-            }
-            .click-text {
-                font-size: 11px;
-                padding: 4px 10px;
-            }
-            .play-button {
-                width: 50px;
-                height: 50px;
-                font-size: 20px;
-            }
-        }
-        
-        .loading {
+
+        .timer {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            color: white;
-            font-size: 14px;
-            background: rgba(0,0,0,0.7);
-            padding: 8px 16px;
-            border-radius: 30px;
-            display: none;
-            z-index: 30;
-        }
-        
-        video::-webkit-media-controls-download-button {
-            display: none !important;
-        }
-        
-        video::-webkit-media-controls-enclosure {
-            overflow: hidden;
-        }
-        
-        video::-webkit-media-controls-panel {
-            width: calc(100% + 30px);
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #6366f1;
+            text-shadow: 
+                0 0 20px rgba(99, 102, 241, 0.5),
+                0 4px 8px rgba(0, 0, 0, 0.2);
+            letter-spacing: -0.03em;
+            z-index: 2;
+            font-variant-numeric: tabular-nums;
         }
 
-        .download-area {
+        .progress-ring {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            background: rgba(10, 5, 15, 0.9);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 102, 170, 0.3);
-            border-top: none;
-            border-radius: 0 0 16px 16px;
-            padding: 10px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 8px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.7);
-            z-index: 5;
-            position: relative;
-        }
-        
-        .download-text {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: white;
-            font-weight: 500;
-            font-size: 0.9rem;
-            letter-spacing: 0.3px;
-        }
-        
-        .download-text span {
-            background: #ff3399;
-            padding: 3px 8px;
-            border-radius: 30px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            color: black;
-            text-transform: uppercase;
-        }
-        
-        .download-btn {
-            background: linear-gradient(145deg, #ff0066, #b30049);
-            border: none;
-            color: white;
-            font-size: 1rem;
-            font-weight: 600;
-            padding: 8px 22px;
-            border-radius: 40px;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            box-shadow: 0 0 15px #ff0066, 0 4px 8px rgba(0,0,0,0.6);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border: 1px solid rgba(255,255,255,0.3);
-            touch-action: manipulation;
-            text-decoration: none;
-            line-height: 1.2;
-            letter-spacing: 0.5px;
-            min-width: 130px;
-            justify-content: center;
-            white-space: nowrap;
-        }
-        
-        .download-btn:active {
-            transform: scale(0.96);
-            background: linear-gradient(145deg, #cc0055, #990040);
-            box-shadow: 0 0 25px #ff66aa;
-        }
-        
-        .download-btn:hover {
-            background: linear-gradient(145deg, #ff3388, #cc0055);
-            box-shadow: 0 0 30px #ff80b3;
-        }
-        
-        .download-icon {
-            font-size: 1.2rem;
-            filter: drop-shadow(0 0 4px white);
+            height: 100%;
+            z-index: 1;
         }
 
-        @media (max-width: 450px) {
-            .download-area {
-                padding: 8px 12px;
+        .progress-ring circle {
+            fill: none;
+            stroke-width: 4;
+            stroke-linecap: round;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        .progress-ring .background-circle {
+            stroke: rgba(99, 102, 241, 0.2);
+            stroke-width: 4;
+        }
+
+        .progress-ring .progress-circle {
+            stroke: #6366f1;
+            stroke-width: 4;
+            stroke-dasharray: 565;
+            stroke-dashoffset: 565;
+            transition: stroke-dashoffset 1s linear;
+        }
+
+        .countdown-message {
+            font-size: 0.95rem;
+            margin: 20px 0 25px;
+            color: #cbd5e1;
+            line-height: 1.5;
+            padding: 0 10px;
+        }
+
+        .final-download-btn {
+            margin-top: 15px;
+            padding: 18px 20px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(to right, #475569, #64748b);
+            color: #94a3b8;
+            cursor: not-allowed;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .final-download-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s;
+        }
+
+        .final-download-btn.active::before {
+            display: block;
+        }
+
+        .final-download-btn.active {
+            background: linear-gradient(to right, #6366f1, #8b5cf6);
+            color: #ffffff;
+            cursor: pointer;
+            box-shadow: 
+                0 8px 25px rgba(99, 102, 241, 0.3),
+                0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .final-download-btn.active:active {
+            transform: translateY(2px);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .final-download-btn.active:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 12px 30px rgba(99, 102, 241, 0.4),
+                0 6px 10px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(to right, #8b5cf6, #6366f1);
+        }
+
+        /* ================= MOBILE OPTIMIZATIONS ================= */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px 8px;
             }
-            .download-text {
-                font-size: 0.8rem;
+            
+            .page {
+                padding: 5px;
+                min-height: calc(100vh - 20px);
             }
-            .download-text span {
-                padding: 2px 6px;
-                font-size: 0.65rem;
+            
+            .container, .countdown-box {
+                padding: 25px 20px;
+                max-width: 100%;
+                border-radius: 18px;
+                margin: 5px auto;
             }
-            .download-btn {
-                font-size: 0.9rem;
-                padding: 6px 16px;
-                min-width: 115px;
-                gap: 4px;
+            
+            .file-icon {
+                width: 65px;
+                height: 65px;
+                font-size: 1.6rem;
+                margin-bottom: 20px;
+                border-radius: 16px;
             }
-            .download-icon {
+            
+            .download-title {
+                font-size: 1.25rem;
+                margin-bottom: 20px;
+            }
+            
+            .download-btn, .final-download-btn {
+                padding: 16px 18px;
                 font-size: 1rem;
+                border-radius: 12px;
+                margin-bottom: 15px;
+            }
+            
+            .countdown-wrapper {
+                width: 180px;
+                height: 180px;
+                margin: 20px auto;
+            }
+            
+            .timer {
+                font-size: 3rem;
+            }
+            
+            .countdown-title {
+                font-size: 1.2rem;
+                margin-bottom: 15px;
+            }
+            
+            .countdown-message {
+                font-size: 0.9rem;
+                margin: 15px 0 20px;
+                padding: 0 5px;
+            }
+            
+            .info-text {
+                font-size: 0.8rem;
+                margin-top: 15px;
+                padding: 0;
             }
         }
 
         @media (max-width: 360px) {
-            .download-area {
-                flex-direction: column;
-                align-items: stretch;
+            .container, .countdown-box {
+                padding: 22px 18px;
+                border-radius: 16px;
             }
-            .download-text {
-                justify-content: center;
-                margin-bottom: 2px;
+            
+            .file-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+                margin-bottom: 18px;
             }
-            .download-btn {
-                width: 100%;
+            
+            .download-title {
+                font-size: 1.15rem;
             }
+            
+            .countdown-wrapper {
+                width: 160px;
+                height: 160px;
+                margin: 15px auto;
+            }
+            
+            .timer {
+                font-size: 2.7rem;
+            }
+            
+            .download-btn, .final-download-btn {
+                padding: 15px 16px;
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (max-height: 600px) and (orientation: landscape) {
+            .page {
+                padding: 10px 0;
+                align-items: flex-start;
+                min-height: auto;
+                min-height: 100vh;
+            }
+            
+            .container, .countdown-box {
+                margin: 20px auto;
+                max-width: 90%;
+                padding: 25px 30px;
+            }
+            
+            .file-icon {
+                width: 55px;
+                height: 55px;
+                font-size: 1.4rem;
+                margin-bottom: 15px;
+            }
+            
+            .download-title, .countdown-title {
+                font-size: 1.2rem;
+                margin-bottom: 15px;
+            }
+            
+            .countdown-wrapper {
+                width: 150px;
+                height: 150px;
+                margin: 15px auto;
+            }
+            
+            .timer {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .container, .countdown-box {
+                padding: 20px 15px;
+            }
+            
+            .timer {
+                font-size: 2.5rem;
+            }
+            
+            .countdown-wrapper {
+                width: 140px;
+                height: 140px;
+            }
+            
+            .download-title {
+                font-size: 1.1rem;
+            }
+            
+            .file-icon {
+                width: 55px;
+                height: 55px;
+                font-size: 1.3rem;
+            }
+        }
+
+        /* Touch-friendly improvements */
+        button {
+            min-height: 44px;
+        }
+        
+        /* Prevent text selection */
+        .download-btn, .final-download-btn, .timer {
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        
+        /* Smooth transitions */
+        * {
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
     </style>
 </head>
 <body>
-    <div class="bg-orb orb1"></div>
-    <div class="bg-orb orb2"></div>
 
+<!-- ================= LANDING PAGE ================= -->
+<div class="page" id="landing">
     <div class="container">
-        <div class="video-wrapper">
-            <div class="player" id="playerContainer">
-                <!-- Split thumbnail -->
-                <div id="thumbnail" class="thumbnail">
-                    <div class="glow-ball ball1"></div>
-                    <div class="glow-ball ball2"></div>
-                    
-                    <div class="preview-half">
-                        <video class="preview-video" muted autoplay loop playsinline preload="auto">
-                            <source src="https://cdn.veporn.com/an-old-cure-for-migraines.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    
-                    <div class="text-half">
-                        <div class="hot-text">HOT</div>
-                        <div class="premium-text">PREMIUM</div>
-                        <div class="click-text">CLICK TO WATCH</div>
-                    </div>
-                </div>
-                
-                <!-- Primary: MP4 video (placeholder src - replace with actual MP4 URL when available) -->
-                <video id="myVideo" muted controls controlsList="nodownload" playsinline webkit-playsinline disablepictureinpicture preload="auto">
-                    <source src="" type="video/mp4">
-                </video>
-                
-                <!-- Fallback: iframe embed (used when MP4 fails) -->
-                <iframe id="fallbackIframe" src="" allowfullscreen allow="autoplay; fullscreen; encrypted-media" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
-                
-                <div id="playButton" class="play-button">
-                    ▶
-                </div>
-                
-                <div id="loading" class="loading">Loading...</div>
-            </div>
+        <div class="file-icon">
+            <i class="fas fa-download"></i>
         </div>
         
-        <!-- Download button section -->
-        <div class="download-area">
-            <div class="download-text">
-                <span>HD</span> Full video
-            </div>
-            <button class="download-btn" id="downloadBtn">
-                <span class="download-icon">⬇️</span> DOWNLOAD
-            </button>
+        <div class="download-title">Ready to Download</div>
+
+        <button class="download-btn" onclick="startDownload()">
+            <i class="fas fa-download"></i>
+            DOWNLOAD NOW
+        </button>
+        
+        <div class="info-text">
+            <i class="fas fa-info-circle"></i>
+            Clicking download will open verification ads before starting your download
         </div>
     </div>
+</div>
 
-    <script>
-        const playButton = document.getElementById('playButton');
-        const video = document.getElementById('myVideo');
-        const fallbackIframe = document.getElementById('fallbackIframe');
-        const thumbnail = document.getElementById('thumbnail');
-        const loading = document.getElementById('loading');
-        const downloadBtn = document.getElementById('downloadBtn');
+<!-- ================= COUNTDOWN PAGE ================= -->
+<div class="page" id="countdownPage" style="display:none">
+    <div class="countdown-box">
+        <div class="countdown-wrapper">
+            <svg class="progress-ring" viewBox="0 0 200 200">
+                <circle class="background-circle" cx="100" cy="100" r="90"></circle>
+                <circle class="progress-circle" cx="100" cy="100" r="90"></circle>
+            </svg>
+            <div class="timer" id="timer">10</div>
+        </div>
         
-        // ===== YOUR 9 MONETAG LINKS =====
-        const monetagLinks = [
-            "https://omg10.com/4/8251888",
-            "https://omg10.com/4/7512585", 
-            "https://omg10.com/4/8257954",
-            "https://omg10.com/4/1415254", 
-            "https://omg10.com/4/7512545", 
-            "https://omg10.com/4/8198889",
-            "https://omg10.com/4/8236017", 
-            "https://omg10.com/4/8247899", 
-            "https://omg10.com/4/8195375"
-        ];
+        <div class="countdown-title">Preparing Your Download</div>
         
-        // DOWNLOAD PAGE (open in same tab)
-        const DOWNLOAD_PAGE = "https://nswf-hub.github.io/download/n12";
-        
-        // ----- VIDEO SOURCES -----
-        // MP4 source - REPLACE THIS WITH YOUR ACTUAL MP4 URL WHEN AVAILABLE
-        // Leave empty for now to use embed, or put a test URL to try MP4 first
-        const MP4_SOURCE = "https://cdn.veporn.com/an-old-cure-for-migraines.mp4"; // Put your MP4 URL here when available e.g., "https://example.com/video.mp4"
-        
-        // Embed source (fallback when MP4 fails or is empty)
-        const EMBED_SRC = "";
-        
-        // Alternative embed formats if needed:
-        // const EMBED_SRC = "https://sendvid.com/b0tura79"; // Direct video page
-        
-        function getDeviceId() {
-            let deviceId = localStorage.getItem('device_id');
-            if (!deviceId) {
-                deviceId = 'device_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-                localStorage.setItem('device_id', deviceId);
-            }
-            return deviceId;
-        }
-        
-        function getNextAdForDevice() {
-            const deviceId = getDeviceId();
-            const counterKey = 'ad_counter_' + deviceId;
-            let currentIndex = localStorage.getItem(counterKey);
-            
-            if (currentIndex === null) {
-                currentIndex = 0;
-            } else {
-                currentIndex = parseInt(currentIndex);
-            }
-            
-            const adLink = monetagLinks[currentIndex];
-            currentIndex = (currentIndex + 1) % monetagLinks.length;
-            localStorage.setItem(counterKey, currentIndex);
-            
-            return adLink;
-        }
-        
-        let videoStarted = false;
-        let fallbackActive = false;
-        let mp4Attempted = false;
-        
-        // Set video source if MP4_SOURCE is not empty
-        if (MP4_SOURCE) {
-            video.src = MP4_SOURCE;
-            video.load();
-            console.log("MP4 source loaded:", MP4_SOURCE);
-        } else {
-            console.log("MP4 source is empty, will use embed fallback");
-        }
-        
-        // Function to attempt MP4 playback
-        function attemptPlayMP4() {
-            return new Promise((resolve, reject) => {
-                // Check if MP4 source is available
-                if (!MP4_SOURCE) {
-                    console.log("No MP4 source available, switching to embed");
-                    switchToIframe();
-                    reject('No MP4 source');
-                    return;
-                }
-                
-                // Hide iframe, show video
-                fallbackIframe.style.display = 'none';
-                video.style.display = 'block';
-                video.muted = true; // Required for autoplay
-                
-                // Make sure source is set
-                if (!video.src || video.src === '') {
-                    video.src = MP4_SOURCE;
-                    video.load();
-                }
-                
-                console.log("Attempting to play MP4...");
-                const playPromise = video.play();
-                
-                if (playPromise !== undefined) {
-                    playPromise.then(() => {
-                        console.log("MP4 playing successfully");
-                        videoStarted = true;
-                        fallbackActive = false;
-                        mp4Attempted = true;
-                        
-                        // Unmute after a short delay
-                        setTimeout(() => { 
-                            video.muted = false; 
-                        }, 500);
-                        
-                        resolve();
-                    }).catch(error => {
-                        console.log("MP4 play failed:", error);
-                        mp4Attempted = true;
-                        // MP4 failed - try iframe
-                        switchToIframe();
-                        reject(error);
-                    });
-                } else {
-                    mp4Attempted = true;
-                    switchToIframe();
-                    reject('Play promise undefined');
-                }
-            });
-        }
-        
-        function switchToIframe() {
-            console.log("Activating iframe fallback");
-            video.pause();
-            video.style.display = 'none';
-            
-            // Clear any existing iframe src and set new one with autoplay
-            fallbackIframe.src = '';
-            
-            // Construct iframe URL with autoplay
-            let iframeSrc = EMBED_SRC;
-            
-            // Add autoplay parameter if not already present
-            if (iframeSrc.indexOf('?') > -1) {
-                if (iframeSrc.indexOf('autoplay=') === -1) {
-                    iframeSrc += '&autoplay=1';
-                }
-            } else {
-                iframeSrc += '?autoplay=1';
-            }
-            
-            // Additional parameters for better compatibility
-            if (iframeSrc.includes('youtube') || iframeSrc.includes('youtu.be')) {
-                iframeSrc += '&enablejsapi=1&rel=0';
-            }
-            
-            fallbackIframe.src = iframeSrc;
-            fallbackIframe.style.display = 'block';
-            
-            fallbackActive = true;
-            videoStarted = true;
-            loading.style.display = 'none';
-            
-            console.log("Iframe activated with src:", iframeSrc);
-        }
-        
-        function handlePlayClick(e) {
-            e.preventDefault();
-            e.stopPropagation();
+        <div class="countdown-message">
+            Please wait while we verify your request...
+        </div>
 
-            if (!videoStarted) {
-                loading.style.display = 'block';
-                playButton.style.display = 'none';
-                thumbnail.style.display = 'none';
-                
-                // Try MP4 first, then fallback to embed if needed
-                attemptPlayMP4()
-                    .then(() => {
-                        // MP4 success
-                        loading.style.display = 'none';
-                        console.log("MP4 playback started");
-                        // Open ad in new tab
-                        const adLink = getNextAdForDevice();
-                        window.open(adLink, '_blank');
-                    })
-                    .catch(() => {
-                        // MP4 failed - switchToIframe is called, but we need to hide loading and open ad
-                        loading.style.display = 'none';
-                        console.log("Using embed fallback");
-                        const adLink = getNextAdForDevice();
-                        window.open(adLink, '_blank');
-                    });
-            }
-        }
+        <button class="final-download-btn" id="finalDownload">
+            <i class="fas fa-download"></i>
+            Start Download
+        </button>
+        
+        <div class="info-text" style="margin-top: 20px;">
+            <i class="fas fa-ad"></i>
+            Clicking will open ads and start your download
+        </div>
+    </div>
+</div>
 
-        // Event listeners
-        playButton.addEventListener('click', handlePlayClick);
-        playButton.addEventListener('touchstart', handlePlayClick, { passive: false });
+<script>
+/* ================= CONFIG ================= */
+// ALL 10 MONETAG LINKS
+const MONETAG_LINKS = [
+    "https://otieu.com/4/8251888",
+    "https://otieu.com/4/7512585",
+    "https://otieu.com/4/8257954",
+    "https://otieu.com/4/1415254",
+    "https://otieu.com/4/7512545",
+    "https://otieu.com/4/8198889",
+    "https://otieu.com/4/8236017",
+    "https://otieu.com/4/8247899",
+    "https://otieu.com/4/8195375",
+    "https://otieu.com/4/8257975"
+];
+
+const DOWNLOAD_LINK = "https://viralph.player4me.online/#kldg9&dl=1";
+
+// Track used links to avoid repetition
+let usedLinks = [];
+let countdownInterval;
+
+/* ================= RANDOM LINK SELECTION ================= */
+function getRandomMonetagLink() {
+    // If all links have been used, reset the used links array
+    if (usedLinks.length >= MONETAG_LINKS.length) {
+        usedLinks = [];
+    }
+    
+    // Filter out already used links
+    const availableLinks = MONETAG_LINKS.filter(link => !usedLinks.includes(link));
+    
+    // Get random link from available links
+    const randomIndex = Math.floor(Math.random() * availableLinks.length);
+    const selectedLink = availableLinks[randomIndex];
+    
+    // Mark this link as used
+    usedLinks.push(selectedLink);
+    
+    return selectedLink;
+}
+
+function getTwoDifferentMonetagLinks() {
+    const firstLink = getRandomMonetagLink();
+    
+    // Ensure second link is different
+    let secondLink;
+    do {
+        secondLink = getRandomMonetagLink();
+    } while (secondLink === firstLink && MONETAG_LINKS.length > 1);
+    
+    return { firstLink, secondLink };
+}
+
+/* ================= FLOW ================= */
+function startDownload() {
+    // Visual feedback for button click
+    const btn = document.querySelector('.download-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Opening...';
+    
+    // Get two different monetag links
+    const { firstLink, secondLink } = getTwoDifferentMonetagLinks();
+    
+    // 1. OPEN RANDOM AD WHEN DOWNLOAD IS CLICKED
+    setTimeout(() => {
+        window.open(firstLink, "_blank", "noopener,noreferrer");
         
-        // Also allow clicking on video to play if not started
-        video.addEventListener('click', function(e) {
-            if (!videoStarted) {
-                handlePlayClick(e);
-            }
-        });
+        // Store second link for later use
+        window.currentSecondLink = secondLink;
         
-        // Video error handling
-        video.addEventListener('error', function(e) {
-            console.log("Video error occurred:", e);
-            if (!videoStarted && !mp4Attempted) {
-                // If error before play, switch to iframe
-                loading.style.display = 'none';
-                switchToIframe();
-            }
-        });
+        // 2. SHOW COUNTDOWN PAGE
+        setTimeout(() => {
+            document.getElementById("landing").style.display = "none";
+            const countdownPage = document.getElementById("countdownPage");
+            countdownPage.style.display = "flex";
+            countdownPage.style.opacity = "0";
+            
+            // Trigger reflow for animation
+            countdownPage.offsetHeight;
+            countdownPage.style.opacity = "1";
+            
+            startTimer();
+        }, 300);
+    }, 100);
+}
+
+function startTimer() {
+    let time = 10;
+    const timerEl = document.getElementById("timer");
+    const btn = document.getElementById("finalDownload");
+    const progressCircle = document.querySelector('.progress-circle');
+    
+    // Calculate circumference for progress circle
+    const radius = 90;
+    const circumference = 2 * Math.PI * radius;
+    
+    // Set initial stroke properties
+    progressCircle.style.strokeDasharray = circumference;
+    progressCircle.style.strokeDashoffset = circumference;
+    
+    // Clear any existing interval
+    if (countdownInterval) {
+        clearInterval(countdownInterval);
+    }
+    
+    // Start countdown
+    countdownInterval = setInterval(() => {
+        time--;
+        timerEl.textContent = time;
         
-        // If video stalls
-        video.addEventListener('stalled', function() {
-            console.log("Video stalled");
-            if (!videoStarted && !mp4Attempted) {
-                switchToIframe();
-            }
-        });
+        // Update progress circle
+        const progress = (10 - time) / 10;
+        const offset = circumference - (progress * circumference);
+        progressCircle.style.strokeDashoffset = offset;
         
-        // When video can play through
-        video.addEventListener('canplaythrough', function() {
-            console.log("Video can play through");
-        });
-        
-        // If iframe fails to load
-        fallbackIframe.addEventListener('error', function() {
-            console.log("Iframe failed to load");
-            loading.style.display = 'none';
-        });
-        
-        // If iframe loads successfully
-        fallbackIframe.addEventListener('load', function() {
-            console.log("Iframe loaded successfully");
-            loading.style.display = 'none';
-        });
-        
-        // Reset when video ends
-        video.addEventListener('ended', function() {
-            console.log("Video ended");
-            resetPlayer();
-        });
-        
-        // Function to reset player to initial state
-        function resetPlayer() {
-            videoStarted = false;
-            fallbackActive = false;
-            mp4Attempted = false;
-            playButton.style.display = 'flex';
-            thumbnail.style.display = 'flex';
-            video.style.display = 'none';
-            fallbackIframe.style.display = 'none';
-            fallbackIframe.src = ''; // Clear iframe src
-            video.controls = true;
+        // Pulse effect
+        timerEl.style.transform = "translate(-50%, -50%) scale(1.08)";
+        setTimeout(() => {
+            timerEl.style.transform = "translate(-50%, -50%) scale(1)";
+        }, 150);
+
+        if (time <= 0) {
+            clearInterval(countdownInterval);
+            
+            // Ensure progress circle is complete
+            progressCircle.style.strokeDashoffset = 0;
+            
+            btn.classList.add("active");
+            btn.innerHTML = '<i class="fas fa-download"></i> Start Download';
+            
+            // Add click handler
+            btn.onclick = handleFinalDownload;
         }
+    }, 1000);
+}
+
+function handleFinalDownload() {
+    const btn = document.getElementById("finalDownload");
+    
+    if (!btn.classList.contains('active')) return;
+    
+    // Disable button
+    btn.disabled = true;
+    btn.style.cursor = 'not-allowed';
+    btn.style.transform = 'translateY(2px)';
+    
+    // Visual feedback
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Opening Ads...';
+    
+    // 1. OPEN SECOND RANDOM AD
+    setTimeout(() => {
+        const secondLink = window.currentSecondLink || getRandomMonetagLink();
+        window.open(secondLink, "_blank", "noopener,noreferrer");
         
-        // Prevent multiple touch events
-        document.addEventListener('touchstart', (e) => {
-            if (e.touches.length > 1) e.preventDefault();
-        }, { passive: false });
-        
-        // Disable right-click on video
-        video.addEventListener('contextmenu', e => e.preventDefault());
-        
-        // ========= DOWNLOAD BUTTON =========
-        downloadBtn.addEventListener('click', function(e) {
-            e.preventDefault();
+        // 2. START FILE DOWNLOAD
+        setTimeout(() => {
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Starting Download...';
+            startFileDownload();
             
-            const adLink = getNextAdForDevice();
-            window.open(adLink, '_blank');
-            
+            // 3. Update UI
             setTimeout(() => {
-                window.location.href = DOWNLOAD_PAGE;
-            }, 50);
-        });
+                btn.innerHTML = '<i class="fas fa-check"></i> Download Started!';
+                btn.style.background = 'linear-gradient(to right, #10b981, #059669)';
+                
+                // Enable download again after delay
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fas fa-redo"></i> Download Again';
+                    btn.style.background = 'linear-gradient(to right, #6366f1, #8b5cf6)';
+                    btn.disabled = false;
+                    btn.style.cursor = 'pointer';
+                    btn.style.transform = 'translateY(0)';
+                    btn.classList.add('active');
+                }, 2000);
+            }, 500);
+        }, 500);
+    }, 300);
+}
 
-        downloadBtn.addEventListener('touchstart', function(e) {
-            e.preventDefault();
-            const adLink = getNextAdForDevice();
-            window.open(adLink, '_blank');
-            setTimeout(() => {
-                window.location.href = DOWNLOAD_PAGE;
-            }, 50);
-        }, { passive: false });
+function startFileDownload() {
+    const downloadLink = document.createElement('a');
+    downloadLink.href = DOWNLOAD_LINK;
+    downloadLink.download = 'SAME-220-HD.mp4';
+    downloadLink.style.display = 'none';
+    document.body.appendChild(downloadLink);
+    
+    downloadLink.click();
+    
+    setTimeout(() => {
+        document.body.removeChild(downloadLink);
+    }, 100);
+}
 
-        console.log("Dual source ready:");
-        console.log("- MP4 source:", MP4_SOURCE || "EMPTY (will use embed)");
-        console.log("- Embed source:", EMBED_SRC);
-        console.log("Will try MP4 first, fallback to embed if MP4 fails");
-    </script>
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Clear any stored links from previous sessions
+    window.currentSecondLink = null;
+    usedLinks = [];
+    countdownInterval = null;
+    
+    // Optional: Shuffle the links array on page load for better randomness
+    for (let i = MONETAG_LINKS.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [MONETAG_LINKS[i], MONETAG_LINKS[j]] = [MONETAG_LINKS[j], MONETAG_LINKS[i]];
+    }
+    
+    // Add touch event listeners for better mobile experience
+    const downloadBtn = document.querySelector('.download-btn');
+    const finalBtn = document.getElementById('finalDownload');
+    
+    // Prevent long press context menu on buttons
+    [downloadBtn, finalBtn].forEach(btn => {
+        btn.addEventListener('contextmenu', e => e.preventDefault());
+        btn.addEventListener('touchstart', function() {
+            this.classList.add('touch-active');
+        }, {passive: true});
+        btn.addEventListener('touchend', function() {
+            this.classList.remove('touch-active');
+        }, {passive: true});
+    });
+    
+    // Prevent zoom on double tap
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function(event) {
+        const now = (new Date()).getTime();
+        if (now - lastTouchEnd <= 300) {
+            event.preventDefault();
+        }
+        lastTouchEnd = now;
+    }, false);
+});
+</script>
 </body>
 </html>
